@@ -3,6 +3,7 @@ maya-ds4 stayed the builds from before the update.  It now compiles every engine
 the targets the stamp lists, the engine binaries compiled before - in one build with the same compiler, and for the
 GPUs every installed model runs on (the engines share one CMake cache).  cmake is replaced; no GPU needed."""
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -42,6 +43,7 @@ class RebuildAll(unittest.TestCase):
                     patch.object(maya, "DS4_EXE", self.build / "maya-ds4"),
                     patch.object(maya, "MM3_EXE", self.build / "maya-mm3"),
                     patch.object(maya, "HY4_EXE", self.build / "maya-hy4"),
+                    patch.object(maya, "IK2_EXE", self.build / "maya-ik2"),
                     patch.object(maya, "say"), patch.object(maya, "ok"), patch.object(maya, "step"),
                     patch.object(maya, "warn", side_effect=lambda m, *x: self.warned.append(m)),
                     patch.object(maya.S, "source_hash", return_value="new"),
@@ -232,6 +234,40 @@ class RebuildAll(unittest.TestCase):
             maya.build_step(self.a(True), self.pc, self.llama, "maya")
         bat = (self.root / "build-maya.bat").read_text(encoding="utf-8")
         self.assertIn("--target maya maya-ds4 maya-hy4 -j", bat)
+
+
+@unittest.skipUnless(os.name == "nt", "runs the generated Windows batch file")
+class WindowsConfigure(unittest.TestCase):
+    def test_ninja_configure_retries_once_in_the_same_build_directory(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            vcvars = root / "vcvars.bat"
+            vcvars.write_text("@set MAYA_TEST_VCVARS=ready\n", encoding="ascii")
+            configure = root / "configure.py"
+            configure.write_text(
+                "import os, sys\n"
+                "from pathlib import Path\n"
+                "assert os.environ['MAYA_TEST_VCVARS'] == 'ready'\n"
+                "cache = Path(__file__).with_name('CMakeCache.txt')\n"
+                "with cache.open('a') as attempts: attempts.write('configure\\n')\n"
+                "count = len(cache.read_text().splitlines())\n"
+                "sys.exit(0 if count == 2 and sys.argv[-1] == 'recover' else 1)\n",
+                encoding="ascii",
+            )
+            cache = root / "CMakeCache.txt"
+            marker = root / "built"
+            build = root / "build.py"
+            build.write_text("from pathlib import Path\nPath(__file__).with_name('built').touch()\n", encoding="ascii")
+            for mode, stopped in (("recover", None), ("fail", "configuring")):
+                with self.subTest(mode=mode), patch.object(maya, "ROOT", root):
+                    cache.unlink(missing_ok=True)
+                    marker.unlink(missing_ok=True)
+                    conf = [sys.executable, str(configure), "-G", "Ninja", mode]
+                    step = REAL_CMAKE_STEPS(conf, [sys.executable, str(build)], dict(os.environ),
+                                            "build-test.bat", vcvars=vcvars)
+                    self.assertEqual(step, stopped)
+                    self.assertEqual(cache.read_text().splitlines(), ["configure", "configure"])
+                    self.assertEqual(marker.exists(), mode == "recover")
 
 
 if __name__ == "__main__":

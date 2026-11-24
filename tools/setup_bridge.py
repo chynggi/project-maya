@@ -245,9 +245,10 @@ class Bridge:
             rest = b""
             while chunk := p.stdout.read(1 << 16):
                 rest += chunk
-                # a line ends at \n (or \r\n); a lone \r rewrites it (curl's meter); a last \r may be half of a \r\n
-                cut = len(rest) - rest.endswith(b"\r")
-                parts = re.split(rb"(\r\n|\n|\r)", rest[:cut])
+                # Windows tools can emit \r\r\n after translating an existing \r\n through a text stream.
+                # Keep up to two trailing CRs in case the LF arrives on the next read.
+                cut = len(rest) - (2 if rest.endswith(b"\r\r") else rest.endswith(b"\r"))
+                parts = re.split(rb"(\r{0,2}\n|\r)", rest[:cut])
                 rest = parts.pop() + rest[cut:]
                 for text, end in zip(parts[::2], parts[1::2]):
                     self._output(output_text(text), end == b"\r", keep)

@@ -2906,7 +2906,8 @@ def vs_env(env=None) -> dict:
 
 def cmake_steps(conf, build, env, bat_name: str, vcvars=None, nvcc=None) -> str | None:
     """CMake's configure, then its build (once more when that stops: it continues where it stopped).  None when both
-    worked, else what stopped.  On Windows both run in a .bat that first calls Visual Studio's vcvars64.bat - the
+    worked, else what stopped.  On Windows, Ninja's configure also gets one retry in the same build directory.
+    Both run in a .bat that first calls Visual Studio's vcvars64.bat - the
     compiler's environment - the way Strata's setup.py builds there (cmake_build).  `nvcc` says which toolkit the
     CUDA build uses: its release decides whether a VS 2026-only PC is usable (S.find_vcvars)."""
     if not WIN:
@@ -2921,9 +2922,16 @@ def cmake_steps(conf, build, env, bat_name: str, vcvars=None, nvcc=None) -> str 
     if vcvars is None:
         return "looking for Visual Studio's C++ compiler (the Build Tools with 'Desktop development with C++')"
     bat = ROOT / bat_name
-    bat.write_text(f'@echo off\r\ncall "{vcvars}" >nul\r\n{cmdline(conf)} || exit /b 3\r\n{cmdline(build)} && exit /b 0'
+    configure = cmdline(conf)
+    configure_steps = f"{configure} || exit /b 3\r\n"
+    if "Ninja" in conf:
+        # CMake can stop in Ninja's recompact during an ABI probe. Reconfigure without removing build artifacts.
+        configure_steps = (f"{configure} && goto build\r\n"
+                           "echo   (CMake configuration stopped - trying it once more)\r\n"
+                           f"{configure_steps}:build\r\n")
+    bat.write_text(f'@echo off\r\ncall "{vcvars}" >nul\r\n{configure_steps}{cmdline(build)} && exit /b 0'
                    '\r\necho   (the build stopped - trying it once more: it continues where it stopped)\r\n'
-                   f'{cmdline(build)} || exit /b 4\r\n', encoding="utf-8")
+                   f'{cmdline(build)} || exit /b 4\r\n', encoding="utf-8", newline="")
     say(f"  > {bat}   (Visual Studio's environment, then:)")
     say("  > " + cmdline(conf))
     say("  > " + cmdline(build))
@@ -2974,9 +2982,10 @@ def toolchain_for(archs, nvcc_given: str | None, hc_given: str | None) -> tuple:
                       (["-ccbin", shutil.which(c) or c] if c else [])
                 if vcvars:                             # cl.exe is on PATH only inside Visual Studio's environment
                     bat = Path(t) / "probe.bat"
-                    bat.write_text(f'@echo off\r\ncall "{vcvars}" >nul\r\n{cmdline(cmd)}\r\n', encoding="utf-8")
+                    bat.write_text(f'@echo off\r\ncall "{vcvars}" >nul\r\n{cmdline(cmd)}\r\n',
+                                   encoding="utf-8", newline="")
                     cmd = ["cmd", "/c", str(bat)]
-                if subprocess.run(cmd, capture_output=True, text=True,
+                if subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                                   env=vs_env() if vcvars else None).returncode == 0:
                     ok(f"{nv} with " + ("Visual Studio's C++ compiler" if WIN else c or "the default g++"))
                     return nv, c

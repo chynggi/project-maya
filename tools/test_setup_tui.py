@@ -57,13 +57,22 @@ class Streaming(unittest.TestCase):
                                  "time.sleep(0.3); sys.stdout.buffer.write(b'\\nb\\n')")
         self.assertEqual(ev, [("out", "a"), ("out", "b")])
 
+    def test_windows_double_cr_keeps_diagnostic_lines_in_the_log(self):
+        _, ev, b = self.run_code(
+            "import sys, time; sys.stdout.buffer.write(b'ninja: error: missing rules.ninja\\r\\r'); "
+            "sys.stdout.buffer.flush(); time.sleep(0.3); sys.stdout.buffer.write(b'\\n  ^ near here\\r\\r\\n')"
+        )
+        lines = ["ninja: error: missing rules.ninja", "  ^ near here"]
+        self.assertEqual(ev, [("out", line) for line in lines])
+        self.assertEqual([t for _, k, t in b.entries if k == "out"], lines)
+
     # MSVC writes its messages in the console's OEM code page (Shift-JIS on a Japanese Windows), not UTF-8
     def test_a_line_that_is_not_utf8_is_read_in_the_oem_code_page(self):
         sjis = "warning C4211: ファイル".encode("cp932")
         _, ev, _ = self.run_code(f"import sys; sys.stdout.buffer.write(b'caf\\xc3\\xa9\\n' + {sjis!r} + b'\\n')")
         self.assertEqual(ev[0], ("out", "café"))
         if os.name == "nt":
-            self.assertEqual(ev[1], ("out", sjis.decode("oem")))
+            self.assertEqual(ev[1], ("out", sjis.decode("oem", errors="replace")))
         else:
             self.assertTrue(ev[1][1].startswith("warning C4211: "))
 
