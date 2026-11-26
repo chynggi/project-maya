@@ -4,7 +4,7 @@
 
 <h1 align="center">Project Maya</h1>
 
-<p align="center"><b>在你自己的 GPU 上运行 GLM-5.3 (744 B)、GLM-5.3-Flash (321 B)、DeepSeek-V4.1-Flash-1017 (748 B)、MiniMax-M3.1-Flash (428 B) 和 Hy4-Flash (220 B)</b><br>
+<p align="center"><b>在你自己的 GPU 上运行 GLM-5.3 (744 B)、GLM-5.3-Flash (321 B)、DeepSeek-V4.1-Flash-1017 (748 B)、MiniMax-M3.1-Flash (428 B)、Hy4-Flash (220 B) 和 Inkling 2 Mini (26 B)</b><br>
 私密且快速 · 1 块到最多 16 块 NVIDIA GPU · 支持 AMD 和 Windows · 聊天、图片、兼容 OpenAI 和 Anthropic 的 API · 同时处理多个请求</p>
 
 <p align="center">
@@ -14,6 +14,7 @@
 <a href="https://huggingface.co/peasantsmith/DeepSeek-V4.1-Flash-1017-Maya-GGUF"><img src="https://raw.githubusercontent.com/mw00/project-maya/badges/deepseek.svg" alt="DeepSeek-V4.1-Flash Maya downloads"></a>
 <a href="https://huggingface.co/peasantsmith/MiniMax-M3.1-Flash-Maya-GGUF"><img src="https://raw.githubusercontent.com/mw00/project-maya/badges/minimax.svg" alt="MiniMax-M3.1-Flash Maya downloads"></a>
 <a href="https://huggingface.co/peasantsmith/Hy4-Flash-Maya-GGUF"><img src="https://raw.githubusercontent.com/mw00/project-maya/badges/hy4.svg" alt="Hy4-Flash Maya downloads"></a>
+<a href="https://huggingface.co/peasantsmith/Inkling-2-Mini-Maya-GGUF"><img src="https://raw.githubusercontent.com/mw00/project-maya/badges/inkling.svg" alt="Inkling 2 Mini Maya downloads"></a>
 </p>
 
 <p align="center">由 <b>Peasant Smith</b> (<a href="https://github.com/mw00">@mw00</a>) 创建并主导，与 <b><a href="https://github.com/needmorevram">@needmorevram</a></b> 共同维护</p>
@@ -23,7 +24,7 @@
 <sub>Project Maya 是免费的。如果它在你的电脑上运行良好，欢迎赞助，用于购买测试硬件和支持开发。</sub></p>
 
 这么大的模型通常需要数据中心。Maya 让你用手头现有的硬件运行其中五个：
-**GLM-5.3**、**GLM-5.3-Flash**、**DeepSeek-V4.1-Flash-1017**、**MiniMax-M3.1-Flash** 和 **Hy4-Flash**。每个模型都有专门为它打造的引擎。引擎把你的对话最常用的专家 (experts) 放在 GPU 上，接下来会用到的放在内存里，其余的放在 NVMe 固态硬盘上，并随着聊天不断调整。它会测量你的 GPU、CPU、内存和固态硬盘并自动调优。数据不会离开你的机器。
+**GLM-5.3**、**GLM-5.3-Flash**、**DeepSeek-V4.1-Flash-1017**、**MiniMax-M3.1-Flash** 和 **Hy4-Flash**，以及更小的 **Inkling 2 Mini**。每个模型都有专门为它打造的引擎。引擎把你的对话最常用的专家 (experts) 放在 GPU 上，接下来会用到的放在内存里，其余的放在 NVMe 固态硬盘上，并随着聊天不断调整。它会测量你的 GPU、CPU、内存和固态硬盘并自动调优。数据不会离开你的机器。
 
 - **快：** 两块 RTX 5090 加一块 RTX 4090 最高 149 tokens/s，两块 H100 为 124，四块 RTX 4090 为 118，一块 RTX PRO 6000 为 81，单块 RTX 5090 也能达到 30 以上。[真实用户的实测数据](#how-fast-is-it)。
 - **接近原版：** Maya 自己的 GLM-5.3-Flash 量化版本保留了 FP8 模型零样本准确率的 97.7-99.2%；DeepSeek V4.1 · Maya-S 与原版选择相同下一个 token 的概率为 92.6%，MiniMax M3.1 · Maya-S 为 87.6% (各类别平均值)。
@@ -51,7 +52,7 @@ git clone https://github.com/mw00/project-maya.git && cd project-maya
 | **[GLM-5.3-Flash](https://huggingface.co/zai-org/GLM-5.3-Flash)**<br><sub>zai-org · MIT · 321 B，激活 18 B · 最高 1M 上下文</sub> | **Maya-S** (默认) · `glm-maya-s` | 96.5 GB | 内存池 (内存与显存之和) 较小的电脑 |
 | | Maya-S24 · `glm-maya-s24` | 94.7 GB | 24 GB 及以下的显卡：显卡多出约 1.5 GB 用于专家，解码 +14% |
 | | Maya-XS · `glm-maya-xs` | 73.4 GB | 64 GB 内存加 24 GB 显卡的电脑，128K 上下文 |
-| | Maya-M · `glm-maya-m` | 116 GB | 更大的内存池；针对工具调用和前端代码做了校准 |
+| | Maya-M · `glm-maya-m` | 116 GB | 更大的内存池；面向工具调用和前端代码 |
 | | Maya-M-Derisked · `glm-maya-m-derisked` | 116 GB | 经 [Blackfrost_AI](https://x.com/Blackfrost_AI) 修改权重、减少一刀切拒绝的 Maya-M；实验性 |
 | | Maya-L · `glm-maya-l` | 156.3 GB | 最大的内存池；最接近原版 |
 | **[GLM-5.3](https://huggingface.co/zai-org/GLM-5.3)**<br><sub>zai-org · [自有许可证](https://huggingface.co/zai-org/GLM-5.3) · 744 B，激活 40 B · 最高 1M 上下文 · 仅文本</sub> | **Maya-XS** · `glm-5.3-maya-xs` | 170.0 GB | 192 GB 内存池 (VRAM 与 RAM 合计) 即可容纳整个模型；NVIDIA (V100 及更新) 和 AMD ([详情](docs/GLM53.md)) |
@@ -61,6 +62,7 @@ git clone https://github.com/mw00/project-maya.git && cd project-maya
 | **[MiniMax-M3.1-Flash](https://huggingface.co/MiniMaxAI/MiniMax-M3.1-Flash)**<br><sub>MiniMax · [MiniMax Community License](LICENSE.minimax-m31) · 428 B，激活 23 B · 最高 1M 上下文</sub> | Maya-XS · `minimax-maya-xs` | 93 GB | 整个模型装进 128 GB 电脑的内存 |
 | | Maya-S · `minimax-maya-s` | 122 GB | 更接近原版 |
 | **[Hy4-Flash](https://huggingface.co/tencent/Hy4-flash)**<br><sub>腾讯 · [Tencent Hy License](LICENSE.hy4-flash) · 220 B · 最长 1M 上下文 · 支持图片 · NVIDIA、AMD (Linux)</sub> | Maya-XS · `hy4-flash-maya-xs`<br>Maya-S · `hy4-flash-maya-s`<br>Maya-M · `hy4-flash-maya-m`<br>Maya-L · `hy4-flash-maya-l` | 44.8 GB<br>53.0 GB<br>68.4 GB<br>89.5 GB<br>各加一个共用的 63.4 GB n-gram 表 | 内存与显存合计约 56-64 GB (Maya-XS，8 GB 及以上的显卡)、68-80 GB (Maya-S)、80-96 GB (Maya-M) 或 104-128 GB (Maya-L) 的电脑；Maya-S、Maya-M 和 Maya-L 需要 12 GB 及以上的显卡；n-gram 表留在固态硬盘上 |
+| **[Inkling 2 Mini](https://huggingface.co/thinkingmachines/Inkling-2-Mini)**<br><sub>Thinking Machines · Apache 2.0 · 26 B · 最高 1M 上下文 · 可读图片 · NVIDIA、Linux 上的 AMD</sub> | unsloth 的 UD-Q4_K_XL GGUF · `inkling-2-mini` | 17.6 GB | 8 GB 及以上的显卡：放不下的专家留在内存中；24 GB 及以上时整个模型都在显存中 |
 
 **哪个模型适合你的电脑？** 请看 [docs/MEMORY.md](docs/MEMORY.md)，里面有每个模型的推荐内存（VRAM 与 RAM 合计）。
 
@@ -239,7 +241,7 @@ Maya 的量化版本由各模型公开发布的权重制作，并与原版对比
 
 </details>
 
-<details><summary><b>Inkling 2 Mini (experimental preview) 速度基准</b></summary>
+<details><summary><b>Inkling 2 Mini 速度基准</b></summary>
 
 | 机器 | 模型 | 解码 (写出回答) | 预填充 (读取提示) | 版本 | 提交者 |
 | --- | --- | ---: | ---: | --- | --- |
@@ -310,6 +312,11 @@ Project Maya 免费且开源。每个版本在发布前都会在我们自己的 
 <p align="center"><a href="https://github.com/sponsors/mw00"><img src="https://img.shields.io/badge/Sponsor_on_GitHub-ea4aaa?logo=githubsponsors&logoColor=white&style=for-the-badge" alt="Sponsor on GitHub" height="40"></a>
 <a href="https://buymeacoffee.com/peasantsmith"><img src="https://img.shields.io/badge/Buy_me_a_coffee-FFDD00?logo=buymeacoffee&logoColor=black&style=for-the-badge" alt="Buy Me A Coffee" height="32"></a><br>
 <b>Maya 对所有人免费开放。成为赞助者能帮助它一直走下去，也用于购买每个版本测试所用的硬件。谢谢！</b></p>
+<p align="center">
+<img src="https://cdn.simpleicons.org/dash/008DE4" alt="Dash" title="Dash" height="20" align="top"> <code>Xqp3JtJhCoRvGt8TXpyvS9qvukFGp5EPqd</code><br>
+<img src="https://cdn.simpleicons.org/bitcoin/F7931A" alt="Bitcoin" title="Bitcoin" height="20" align="top"> <code>3BCPYKcCSm4VdjUiRPbxGatqCP9h3bo61f</code><br>
+<img src="https://cdn.simpleicons.org/ethereum/627EEA" alt="Ethereum" title="Ethereum" height="20" align="top"> <code>0xE083E8e8eAb2E899F84c4488A0B6a8e522841Cc2</code>
+</p>
 
 欢迎提交速度报告、错误报告和 pull request：[CONTRIBUTING.md](CONTRIBUTING.md) 说明了最有帮助的方式。
 
@@ -317,6 +324,7 @@ Project Maya 免费且开源。每个版本在发布前都会在我们自己的 
 
 - **人员：** Project Maya 由 Peasant Smith ([@mw00](https://github.com/mw00)、[X](https://x.com/PeasantSmith)) 创建并主导，他拥有该项目、其名称和 Maya 模型。[@needmorevram](https://github.com/needmorevram) ([X](https://x.com/needmorevram)) 是共同维护者，贡献了主要功能：DFlash2 草稿、EXL3 支持、KV 流式传输、会话检查点、层拆分搜索、专家画像和 CPU 专家内核，以及为 `maya-ds4` 贡献的 3.5 位 EXL3 选项、4 / 8 块 GPU 上的张量并行和多线程的专家缓存交换 (#276)。同时感谢所有贡献代码和速度报告的人 ([贡献者](https://github.com/mw00/project-maya/graphs/contributors))。
 - **基于 [ggml / llama.cpp](https://github.com/ggml-org/llama.cpp)** (MIT License，Copyright (c) 2023-2026 The ggml authors)：量化格式、CPU 点积以及提示处理路径的 MMQ 内核，均由固定的提交构建 (`third_party/ggml/LICENSE`)。
+- **起步于 [Strata](https://github.com/Niko1221/Strata)** (MIT License，Copyright (c) 2026 Niko1221 and the Strata contributors)。
 - **EXL3 支持**遵循 [exllamav3](https://github.com/turboderp-org/exllamav3) 的格式、码本、CPU 专家内核和分块的张量核心解码 (MIT License，Copyright (c) 2025 Turboderp；`third_party/exllamav3/LICENSE`)。**DFlash2 草稿模型的前向计算**遵循 [beellama.cpp](https://github.com/Anbeeld/beellama.cpp) 的实现 (MIT License，Copyright (c) 2023-2026 The ggml authors、Anbeeld；`third_party/beellama.cpp/LICENSE`)。
 - 模型：[GLM-5.3-Flash](https://huggingface.co/zai-org/GLM-5.3-Flash) 来自 zai-org (MIT)；Maya 的量化版本和图片编码器文件由 zai-org 公开发布的权重制作，沿用其许可证。[DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017) 来自 DeepSeek (MIT)；Maya 的量化版本、其 Engram 表和草稿模型由 DeepSeek 公开发布的权重制作，沿用其许可证；视觉塔来自 DeepSeek 的检查点，GGUF 选项来自 [unsloth 的 GGUF](https://huggingface.co/unsloth/DeepSeek-V4.1-Flash-1017-GGUF)，EXL3 选项来自 turboderp ([2.25 bpw](https://huggingface.co/turboderp/DeepSeek-V4.1-Flash-1017-exl3/tree/2.25bpw)) 和 LibertAIDAI ([2.9](https://huggingface.co/LibertAIDAI/DeepSeek-V4.1-Flash-1017-EXL3-2.9bpw) 和 [3.5 bpw](https://huggingface.co/LibertAIDAI/DeepSeek-V4.1-Flash-1017-EXL3-3.5bpw))。可选的 DFlash2 草稿模型 ([GLM-5.3-Flash-DFlash2-GGUF](https://huggingface.co/Anbeeld/GLM-5.3-Flash-DFlash2-GGUF)，作者 Anbeeld) 采用 CC BY-NC-ND 4.0，仅限非商业使用，只有在你选择时才会下载。
 - 仪表盘的字体：Outfit (SIL Open Font License 1.1，`serve/web/fonts/OFL.txt`)；图标：[Lucide](https://lucide.dev) (ISC License，`serve/web/LICENSE.lucide.txt`)；UI 库：[Preact](https://preactjs.com) (MIT License) 和 [htm](https://github.com/developit/htm) (Apache License 2.0)，连同它们的声明一起打包在 `serve/web/preact.js` 中。

@@ -4,7 +4,7 @@
 
 <h1 align="center">Project Maya</h1>
 
-<p align="center"><b>GLM-5.3 (744 B)、GLM-5.3-Flash (321 B)、DeepSeek-V4.1-Flash-1017 (748 B)、MiniMax-M3.1-Flash (428 B)、Hy4-Flash (220 B) を自分の GPU で</b><br>
+<p align="center"><b>GLM-5.3 (744 B)、GLM-5.3-Flash (321 B)、DeepSeek-V4.1-Flash-1017 (748 B)、MiniMax-M3.1-Flash (428 B)、Hy4-Flash (220 B)、Inkling 2 Mini (26 B) を自分の GPU で</b><br>
 プライベートで高速 · NVIDIA GPU 1 枚から最大 16 枚まで · AMD と Windows · チャット、画像、OpenAI / Anthropic 互換 API · 複数リクエストの同時処理</p>
 
 <p align="center">
@@ -14,6 +14,7 @@
 <a href="https://huggingface.co/peasantsmith/DeepSeek-V4.1-Flash-1017-Maya-GGUF"><img src="https://raw.githubusercontent.com/mw00/project-maya/badges/deepseek.svg" alt="DeepSeek-V4.1-Flash Maya downloads"></a>
 <a href="https://huggingface.co/peasantsmith/MiniMax-M3.1-Flash-Maya-GGUF"><img src="https://raw.githubusercontent.com/mw00/project-maya/badges/minimax.svg" alt="MiniMax-M3.1-Flash Maya downloads"></a>
 <a href="https://huggingface.co/peasantsmith/Hy4-Flash-Maya-GGUF"><img src="https://raw.githubusercontent.com/mw00/project-maya/badges/hy4.svg" alt="Hy4-Flash Maya downloads"></a>
+<a href="https://huggingface.co/peasantsmith/Inkling-2-Mini-Maya-GGUF"><img src="https://raw.githubusercontent.com/mw00/project-maya/badges/inkling.svg" alt="Inkling 2 Mini Maya downloads"></a>
 </p>
 
 <p align="center">作成・主導: <b>Peasant Smith</b> (<a href="https://github.com/mw00">@mw00</a>)、共同メンテナー: <b><a href="https://github.com/needmorevram">@needmorevram</a></b></p>
@@ -23,7 +24,7 @@
 <sub>Project Maya は無料です。お使いの PC で快適に動くなら、スポンサーになっていただくと、テスト用ハードウェアと開発の費用になります。</sub></p>
 
 この規模のモデルは、普通ならデータセンターが必要です。Maya は、すでにお持ちのハードウェアでその 5 つを動かします。
-**GLM-5.3**、**GLM-5.3-Flash**、**DeepSeek-V4.1-Flash-1017**、**MiniMax-M3.1-Flash**、**Hy4-Flash** です。モデルごとに専用のエンジンがあります。会話でよく使われるエキスパートを
+**GLM-5.3**、**GLM-5.3-Flash**、**DeepSeek-V4.1-Flash-1017**、**MiniMax-M3.1-Flash**、**Hy4-Flash**、そしてより小さな **Inkling 2 Mini** です。モデルごとに専用のエンジンがあります。会話でよく使われるエキスパートを
 GPU に、次に使われるものを RAM に、残りを NVMe SSD に置き、チャットの進行に合わせて入れ替えます。GPU、CPU、RAM、SSD を測定して自動でチューニングします。
 データがお使いのマシンの外に出ることはありません。
 
@@ -53,7 +54,7 @@ Maya の量子化はすべて、モデル名のあとに階層 (XS、S、M、L�
 | **[GLM-5.3-Flash](https://huggingface.co/zai-org/GLM-5.3-Flash)**<br><sub>zai-org · MIT · 321 B、アクティブ 18 B · 最大 1M コンテキスト</sub> | **Maya-S** (デフォルト) · `glm-maya-s` | 96.5 GB | メモリ (RAM と VRAM の合計) が小さめの PC |
 | | Maya-S24 · `glm-maya-s24` | 94.7 GB | 24 GB 以下のカード: カードの約 1.5 GB 分をエキスパートに多く回せ、デコード +14% |
 | | Maya-XS · `glm-maya-xs` | 73.4 GB | RAM 64 GB と 24 GB のカードの PC、128K コンテキスト |
-| | Maya-M · `glm-maya-m` | 116 GB | より大きなメモリ; ツール呼び出しとフロントエンドのコード向けにキャリブレーション |
+| | Maya-M · `glm-maya-m` | 116 GB | より大きなメモリ; ツール呼び出しとフロントエンドのコード向け |
 | | Maya-M-Derisked · `glm-maya-m-derisked` | 116 GB | [Blackfrost_AI](https://x.com/Blackfrost_AI) による重み編集で、一律の拒否を減らした Maya-M; 実験的 |
 | | Maya-L · `glm-maya-l` | 156.3 GB | 最大クラスのメモリ; 元のモデルに最も近い |
 | **[GLM-5.3](https://huggingface.co/zai-org/GLM-5.3)**<br><sub>zai-org · [独自ライセンス](https://huggingface.co/zai-org/GLM-5.3) · 744 B、アクティブ 40 B · 最大 1M コンテキスト · テキストのみ</sub> | **Maya-XS** · `glm-5.3-maya-xs` | 170.0 GB | 192 GB のメモリ (VRAM と RAM の合計) にモデル全体が収まる; NVIDIA (V100 以降) と AMD ([詳細](docs/GLM53.md)) |
@@ -63,6 +64,7 @@ Maya の量子化はすべて、モデル名のあとに階層 (XS、S、M、L�
 | **[MiniMax-M3.1-Flash](https://huggingface.co/MiniMaxAI/MiniMax-M3.1-Flash)**<br><sub>MiniMax · [MiniMax Community License](LICENSE.minimax-m31) · 428 B、アクティブ 23 B · 最大 1M コンテキスト</sub> | Maya-XS · `minimax-maya-xs` | 93 GB | 128 GB の PC のメモリにモデル全体を載せる |
 | | Maya-S · `minimax-maya-s` | 122 GB | 元のモデルにより近い |
 | **[Hy4-Flash](https://huggingface.co/tencent/Hy4-flash)**<br><sub>Tencent · [Tencent Hy License](LICENSE.hy4-flash) · 220 B · 最大 1M コンテキスト · 画像対応 · NVIDIA、AMD (Linux)</sub> | Maya-XS · `hy4-flash-maya-xs`<br>Maya-S · `hy4-flash-maya-s`<br>Maya-M · `hy4-flash-maya-m`<br>Maya-L · `hy4-flash-maya-l` | 44.8 GB<br>53.0 GB<br>68.4 GB<br>89.5 GB<br>それぞれ + 共通の n-gram テーブル 63.4 GB | RAM と VRAM の合計が約 56-64 GB (Maya-XS、8 GB 以上のカード)、68-80 GB (Maya-S)、80-96 GB (Maya-M)、104-128 GB (Maya-L) の PC。Maya-S、Maya-M、Maya-L は 12 GB 以上のカード。n-gram テーブルは SSD に置いたまま |
+| **[Inkling 2 Mini](https://huggingface.co/thinkingmachines/Inkling-2-Mini)**<br><sub>Thinking Machines · Apache 2.0 · 26 B · 最大 1M コンテキスト · 画像対応 · NVIDIA、Linux 上の AMD</sub> | unsloth の UD-Q4_K_XL GGUF · `inkling-2-mini` | 17.6 GB | 8 GB 以上のカード: 収まらないエキスパートは RAM に置かれます。24 GB 以上ではモデル全体が VRAM に収まります |
 
 **どのモデルがあなたの PC に合う?** 各モデルの推奨メモリ (VRAM と RAM の合計) は [docs/MEMORY.md](docs/MEMORY.md) を見てください。
 
@@ -241,7 +243,7 @@ Maya の量子化は、各モデルの公開された重みから作られ、元
 
 </details>
 
-<details><summary><b>Inkling 2 Mini (experimental preview) の速度ベンチマーク</b></summary>
+<details><summary><b>Inkling 2 Mini の速度ベンチマーク</b></summary>
 
 | マシン | モデル | デコード (回答の書き出し) | プリフィル (プロンプトの読み込み) | リリース | 報告者 |
 | --- | --- | ---: | ---: | --- | --- |
@@ -312,6 +314,11 @@ Project Maya は無料のオープンソースです。すべてのリリース�
 <p align="center"><a href="https://github.com/sponsors/mw00"><img src="https://img.shields.io/badge/Sponsor_on_GitHub-ea4aaa?logo=githubsponsors&logoColor=white&style=for-the-badge" alt="Sponsor on GitHub" height="40"></a>
 <a href="https://buymeacoffee.com/peasantsmith"><img src="https://img.shields.io/badge/Buy_me_a_coffee-FFDD00?logo=buymeacoffee&logoColor=black&style=for-the-badge" alt="Buy Me A Coffee" height="32"></a><br>
 <b>Maya は誰でも無料で使えるオープンなプロジェクトです。スポンサーになっていただくと、それを続ける力になり、各リリースをテストするハードウェアの費用になります。ありがとうございます!</b></p>
+<p align="center">
+<img src="https://cdn.simpleicons.org/dash/008DE4" alt="Dash" title="Dash" height="20" align="top"> <code>Xqp3JtJhCoRvGt8TXpyvS9qvukFGp5EPqd</code><br>
+<img src="https://cdn.simpleicons.org/bitcoin/F7931A" alt="Bitcoin" title="Bitcoin" height="20" align="top"> <code>3BCPYKcCSm4VdjUiRPbxGatqCP9h3bo61f</code><br>
+<img src="https://cdn.simpleicons.org/ethereum/627EEA" alt="Ethereum" title="Ethereum" height="20" align="top"> <code>0xE083E8e8eAb2E899F84c4488A0B6a8e522841Cc2</code>
+</p>
 
 速度レポート、バグ報告、プルリクエストを歓迎します。何が最も助けになるかは [CONTRIBUTING.md](CONTRIBUTING.md) をご覧ください。
 
@@ -319,6 +326,7 @@ Project Maya は無料のオープンソースです。すべてのリリース�
 
 - **人々:** Project Maya は Peasant Smith ([@mw00](https://github.com/mw00)、[X](https://x.com/PeasantSmith)) が作成・主導しており、プロジェクト、その名前、Maya のモデルを所有しています。[@needmorevram](https://github.com/needmorevram) ([X](https://x.com/needmorevram)) は共同メンテナーで、DFlash2 ドラフト、EXL3 サポート、KV ストリーミング、会話チェックポイント、レイヤー分割探索、エキスパートプロファイル、CPU エキスパートカーネル、そして `maya-ds4` の 3.5 ビット EXL3 オプション、4 / 8 GPU のテンソル並列、スレッド化されたエキスパートキャッシュのスワップ (#276) といった主要機能に貢献しました。コードや速度レポートを送ってくださったすべての方にも感謝します ([コントリビューター](https://github.com/mw00/project-maya/graphs/contributors))。
 - **[ggml / llama.cpp](https://github.com/ggml-org/llama.cpp) をベースにしています** (MIT License、Copyright (c) 2023-2026 The ggml authors): 量子化フォーマット、CPU のドット積、プロンプト処理の MMQ カーネルは、固定したコミットからビルドされています (`third_party/ggml/LICENSE`)。
+- **[Strata](https://github.com/Niko1221/Strata) を出発点としています** (MIT License、Copyright (c) 2026 Niko1221 and the Strata contributors)。
 - **EXL3 サポート**は [exllamav3](https://github.com/turboderp-org/exllamav3) のフォーマット、コードブック、CPU エキスパートカーネル、タイルのテンソルコアデコードに準拠しています (MIT License、Copyright (c) 2025 Turboderp; `third_party/exllamav3/LICENSE`)。**DFlash2 ドラフターのフォワード**は [beellama.cpp](https://github.com/Anbeeld/beellama.cpp) のものに準拠しています (MIT License、Copyright (c) 2023-2026 The ggml authors、Anbeeld; `third_party/beellama.cpp/LICENSE`)。
 - モデル: [GLM-5.3-Flash](https://huggingface.co/zai-org/GLM-5.3-Flash) は zai-org 製 (MIT); Maya の量子化と画像エンコーダーのファイルは zai-org の公開された重みから作られ、そのライセンスを引き継ぎます。[DeepSeek-V4.1-Flash-1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017) は DeepSeek 製 (MIT); Maya の量子化、Engram テーブル、ドラフターは DeepSeek の公開された重みから作られ、そのライセンスを引き継ぎます; ビジョンタワーは DeepSeek のチェックポイント由来で、GGUF オプションは [unsloth の GGUF](https://huggingface.co/unsloth/DeepSeek-V4.1-Flash-1017-GGUF)、EXL3 オプションは turboderp のもの ([2.25 bpw](https://huggingface.co/turboderp/DeepSeek-V4.1-Flash-1017-exl3/tree/2.25bpw)) と LibertAIDAI のもの ([2.9](https://huggingface.co/LibertAIDAI/DeepSeek-V4.1-Flash-1017-EXL3-2.9bpw)、[3.5 bpw](https://huggingface.co/LibertAIDAI/DeepSeek-V4.1-Flash-1017-EXL3-3.5bpw)) です。オプションの DFlash2 ドラフター ([GLM-5.3-Flash-DFlash2-GGUF](https://huggingface.co/Anbeeld/GLM-5.3-Flash-DFlash2-GGUF)、Anbeeld 製) は CC BY-NC-ND 4.0 で、非商用利用のみ、選んだときにだけダウンロードされます。
 - ダッシュボードのフォント: Outfit (SIL Open Font License 1.1、`serve/web/fonts/OFL.txt`); アイコン: [Lucide](https://lucide.dev) (ISC License、`serve/web/LICENSE.lucide.txt`); UI ライブラリ: [Preact](https://preactjs.com) (MIT License) と [htm](https://github.com/developit/htm) (Apache License 2.0)。いずれも告知付きで `serve/web/preact.js` に同梱されています。
